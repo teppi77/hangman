@@ -1,0 +1,5 @@
+# External vendors.
+vendor/
+
+# Eclipse project file.
+.project
