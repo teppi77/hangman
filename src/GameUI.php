@@ -1,6 +1,6 @@
 <?php 
 
-namespace Hangman\Game;
+namespace Hangman;
 
 class GameUI
 {

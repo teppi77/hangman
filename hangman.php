@@ -1,5 +1,20 @@
 <?php
 
+require "vendor/autoload.php";
+
+use Hangman\Game;
+use Hangman\Player;
+
+$player = new Player(5);
+$game = new Game($player);
+$gameUI = new GameUI($game);
+
+$game->setSecretWord('Cameleon');
+while(!$game->isFinished()) {
+  
+}
+
+/*
 $secret_word = explode(' ', 'C a m e l e o n');
 $wrong_guesses = array();
 $guessed_word = array();
@@ -70,3 +85,4 @@ function search_character_secretword($character, &$guessed_word, $secret_word) {
   }
   return $found_character;
 }
+*/
