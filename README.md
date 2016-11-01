@@ -11,4 +11,4 @@ A number of different object-oriented approaches in PHP can be seen in the code,
 # Installation
 
 - Execute: "composer install" in the root.
-- Create the autoloader classes by "composer dump-autoloader" in the project root.
+- Create the autoloader classes by "composer dump-autoload" in the project root.
