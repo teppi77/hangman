@@ -2,12 +2,11 @@
 
 require "vendor/autoload.php";
 
-use Hangman\Game;
-use Hangman\Player;
+use Hangman\Game\Game;
+use Hangman\Game\Player;
 
 $player = new Player(5);
 $game = new Game($player);
-$gameUI = new GameUI($game);
 
 $game->setSecretWord('Cameleon');
 while(!$game->isFinished()) {
