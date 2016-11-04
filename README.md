@@ -1,4 +1,4 @@
-# A hangman game in PHP
+# A simple game framework in PHP
 
 This project is used as practice to refactor a bad code base into something better. The application can be run via the commandline or as an application on a webserver.
 

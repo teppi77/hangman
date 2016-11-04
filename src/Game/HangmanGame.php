@@ -2,9 +2,9 @@
 
 namespace Hangman\Game;
 
-use Hangman\Game\GameState;
+use Hangman\Game\Game;
 
-class HangmanGameState implements GameState{
+class HangmanGame implements Game{
   
   private $title = 'Hangman';
   
@@ -14,21 +14,13 @@ class HangmanGameState implements GameState{
   private $guessedCharacters = array();
   
   public function __construct($player) {
+    
     $this->player = $player;
     
     // TODO: Provide some means to get other words .. 
-    $this->secretWord = str_split('Cameleon');
+    $this->secretWord = str_split('cameleon');
     
-    // Load class properties from the session.
-    if (isset($_SESSION['isFinished'])) {
-      if (!$_SESSION['isFinished']) {
-        // Load the Gamestate from the session
-        $this->secretWord = $_SESSION['secretWord'];
-        $this->guessedCharacters = $_SESSION['guessedCharacters'];
-      } else {
-        $_SESSION = array();
-      }
-    }
+    $this->loadStateFromSession();
   }
   
   public function getTitle() {
@@ -42,14 +34,17 @@ class HangmanGameState implements GameState{
       ));
   }
   
-  public function submitUserInputs($userInputs) {
-    $character = $userInputs['guess'];
+  public function evaluateUserInputs($userInputs) {
+    $character = $this->sanitizeUserInput($userInputs['guess']);
+    
     if (!in_array($character, $this->guessedCharacters) && !in_array($character, $this->secretWord)) {
       $this->player->reduceLive();
     }
+    
     if(!in_array($character, $this->guessedCharacters)) {
       $this->guessedCharacters[] = $character;
     }
+    
     if ($this->player->isDead() || $this->isSolved()) {
       $this->isFinished = TRUE;
     }
@@ -102,6 +97,21 @@ class HangmanGameState implements GameState{
     $_SESSION['isFinished'] = $this->isFinished;
     $_SESSION['lives'] = $this->player->livesLeft();
   }
+  
+  /**
+   * Loads a previous state from the session
+   */
+  public function loadStateFromSession() {
+    if (isset($_SESSION['isFinished'])) {
+      if (!$_SESSION['isFinished']) {
+        // Load the Gamestate from the session
+        $this->secretWord = $_SESSION['secretWord'];
+        $this->guessedCharacters = $_SESSION['guessedCharacters'];
+      } else {
+        $_SESSION = array();
+      }
+    }
+  }
 
   /**
    * @return Boolean isFinished
@@ -130,5 +140,14 @@ class HangmanGameState implements GameState{
       }
     }
     return $maskedSecretWord;
+  }
+  
+  public function sanitizeUserInput($char) {
+    if (strlen($char) > 0) {
+      $char = strtolower(substr($char,0,1));
+      return $char;
+    } else {
+      return ' ';
+    }
   }
 }

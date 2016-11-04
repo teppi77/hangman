@@ -2,15 +2,9 @@
 
 namespace Hangman\Client;
 
-abstract class Client
+interface Client
 {
-  function sanitizeUserInput($char) {
-    if (strlen($char) > 0) {
-      $char = strtolower(substr($char,0,1));
-      return $char;
-    } else {
-      return ' ';
-    }
-  }
+  public function start();
+  public function output();
 }
 

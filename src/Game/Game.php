@@ -2,7 +2,7 @@
 
 namespace Hangman\Game;
 
-interface GameState
+interface Game
 {
   public function __construct($player);
   
@@ -10,13 +10,17 @@ interface GameState
   
   public function getPossibleUserInputElements();
   
-  public function submitUserInputs($userInputs);
+  public function evaluateUserInputs($userInputs);
   
   public function getGameUIElements();
   
   public function saveStateToSession();
+  
+  public function loadStateFromSession();
 
   public function isFinished();
   
   public function isSolved();
+  
+  public function sanitizeUserInput($userInput);
 }

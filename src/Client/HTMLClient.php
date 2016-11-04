@@ -2,14 +2,14 @@
 
 namespace Hangman\Client;
 
-class HTMLClient extends Client
+class HTMLClient implements Client
 {
-  private $gameState = null;
+  private $game = null;
   private $player = null;
   
-  public function __construct($player, $gameState){
+  public function __construct($player, $game){
     $this->player = $player;
-    $this->gameState = $gameState;
+    $this->game = $game;
   }
   
   /**
@@ -17,15 +17,15 @@ class HTMLClient extends Client
    */
   public function start() {
     $userInputs = array();
-    if (!$this->gameState->isFinished()) {
-      foreach($this->gameState->getPossibleUserInputElements() as $userInputElementID => $userInputElementConfiguration) {
+    if (!$this->game->isFinished()) {
+      foreach($this->game->getPossibleUserInputElements() as $userInputElementID => $userInputElementConfiguration) {
         if (!empty($_POST[$userInputElementID])) {
-          $userInputs[$userInputElementID] = $this->sanitizeUserInput($_POST[$userInputElementID]);
+          $userInputs[$userInputElementID] = $_POST[$userInputElementID];
         }
       }
       if (!empty($userInputs)) {
-        $this->gameState->submitUserInputs($userInputs);
-        $this->gameState->saveStateToSession();
+        $this->game->evaluateUserInputs($userInputs);
+        $this->game->saveStateToSession();
       }
     }
     $this->output();
@@ -35,22 +35,21 @@ class HTMLClient extends Client
    * Prints out the application as HTML.
    */
   public function output() {
-    $header = $this->gameState->getTitle();
-    $gameUiElements = $this->gameState->getGameUIElements();
+    $header = $this->game->getTitle();
+    $gameUiElements = $this->game->getGameUIElements();
     $gameUIContent = '';
-    $gameUserInputElements = $this->gameState->getPossibleUserInputElements();
+    $gameUserInputElements = $this->game->getPossibleUserInputElements();
     $userInputElements = '';
     $submit = '';
     $resetLink = '';
-    if (!$this->gameState->isFinished()) {
+    if (!$this->game->isFinished()) {
       $submit = '<input type="submit" name="submit" />';
       foreach($gameUserInputElements as $gameUserInputElementID => $gameUserInputElement) {
         $userInputElements .= '<label for="' . $gameUserInputElementID . '">' . $gameUserInputElement['label'] . ':</label>
         <input type="text" name="' . $gameUserInputElementID . '" />';
       }
-    } else {
-      $resetLink = '<a href="/">Restart the game!</a>';
     }
+    $resetLink = '<a href="/?restart=restart">Restart the game!</a>';
     foreach($gameUiElements as $gameUiElement) {
       $gameUIContent .= '<p>' . $gameUiElement['label'] . (empty($gameUiElement['label']) ? '' : ' : ') . $gameUiElement['value'] . '</p>';
     }
@@ -60,7 +59,7 @@ class HTMLClient extends Client
       <body>
         <h1>$header</h1>
         $gameUIContent
-        <form action="" method="post">
+        <form action="/" method="post">
           $userInputElements
           $submit
           $resetLink

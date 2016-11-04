@@ -6,17 +6,23 @@ require "vendor/autoload.php";
 
 use Hangman\Client\CLIClient;
 use Hangman\Client\HTMLClient;
-use Hangman\Game\HangmanGameState;
+use Hangman\Game\HangmanGame;
+use Hangman\Game\SumGame;
 use Hangman\Game\Player;
+
+// Clear any Session variables if we have a game restart.
+if (!empty($_GET['restart'])) {
+  $_SESSION = array();
+}
 
 $client = null;
 $player = new Player(5);
-$gameState = new HangmanGameState($player);
+$game = new SumGame($player);
 
 if (php_sapi_name() === 'cli') {
-  $client = new CLIClient($player, $gameState);
+  $client = new CLIClient($player, $game);
 } else {
-  $client = new HTMLClient($player, $gameState);
+  $client = new HTMLClient($player, $game);
 }
 $client->start();
 ?>

@@ -2,7 +2,7 @@
 
 namespace Hangman\Client;
 
-class CLIClient extends Client
+class CLIClient implements Client
 {
   public function __construct($player, $gameState){
     $this->player = $player;
@@ -14,10 +14,10 @@ class CLIClient extends Client
       $this->output();
       $userInputs = array();
       foreach($this->gameState->getPossibleUserInputElements() as $userInputElementID => $userInputElementConfiguration) {
-          $userInputs[$userInputElementID] = $this->sanitizeUserInput(readline($userInputElementConfiguration['label'] . ': '));
+          $userInputs[$userInputElementID] = readline($userInputElementConfiguration['label'] . ': ');
       }
       if (!empty($userInputs)) {
-        $this->gameState->submitUserInputs($userInputs);
+        $this->gameState->evaluateUserInputs($userInputs);
       }
     }
     
